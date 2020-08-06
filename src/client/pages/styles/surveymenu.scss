@@ -1,0 +1,22 @@
+.surveymenu-list{
+    
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding:3%;
+    min-width:300px;
+    width:80vw;
+    max-width:700px;
+    height:700px;
+}
+.surveymenu-title{
+    width:100%;
+    font-size:.9rem;
+    text-align:left;
+    margin:20px;
+}
+#app{
+    background-color: #f0f0f0;
+}
