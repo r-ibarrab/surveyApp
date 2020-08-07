@@ -1,14 +1,28 @@
 import React from 'react';
 import './styles/rightnav.scss';
-
+import maspng from '../resources/mas.png'
 import Question from '../components/question';
+
 class rightnav extends React.Component{
 
     constructor(props){
         super(props)
         this.state={
-            ret:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+            ret: props.questions || []
         }
+    }
+
+    addquestion=()=>{
+        let questions = this.state.ret;
+        const newquestion = {title:'',options:['']}
+        questions.push(newquestion);
+        this.setState({ret:questions})
+    }
+
+    saveeverything=()=>{
+        const hijos = document.querySelector('.questions-wrapper-container').children
+        console.log(hijos)
+
     }
 
     render(){
@@ -29,15 +43,24 @@ class rightnav extends React.Component{
 
                         {
                             this.state.ret.map((e,c)=>{
-                                return <Question key={c} subkey={c} />
+                                return <Question key={c} subkey={c} data={e} />
                             })
                         }
                        
                     </div>
+
+                    <div onClick={this.addquestion} className="addquestion-container">
+                        <div className="addquestion-wrapper">
+                            <img className="masquestion" src={maspng} alt="plus"/>
+                            <h5>Add a question</h5>
+                        </div>
+                        
+                    </div>
+
                     
 
                 </div>
-                <h2 className="save-button">Save</h2>
+                <h2 onClick={this.saveeverything} className="save-button">Save</h2>
 
 
     

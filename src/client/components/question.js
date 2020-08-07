@@ -1,39 +1,72 @@
 import React from 'react';
 import './styles/question.scss'
 import maspng from '../resources/mas.png'
+import basurapng from '../resources/basura.png'
 import { render } from 'react-dom';
 
 class question extends React.Component{
 
   constructor(props){
-      super(props)
+      super(props)        
 
       this.state={
-        options :['option1','option2','option3','option4','option5','option6','option7'],
+        title: props.data.title,
+        options :props.data.options, 
         optionsnum:null,
+        expanded:false
 
       }
     }
 
 
     clickopener=(e)=>{  
-        e.target.parentNode.parentNode.style.height="380px"; 
-        // e.target.parentNode.removeChild(document.querySelector('.question-titles-container'))
-        e.target.removeAttribute("readonly");
 
-    
+                if(this.state.expanded){
+                    e.target.parentNode.parentNode.parentNode.parentNode.style.height="95px"; 
+                    e.target.parentNode.parentNode.parentNode.children[1].readOnly=true;
+                    this.setState({expanded:false});
+                    e.target.parentNode.parentNode.parentNode.firstChild.style.display="flex"
+                }else{
+                    e.target.parentNode.parentNode.parentNode.parentNode.style.height="350px"; 
+
+                    try{
+                        e.target.parentNode.parentNode.parentNode.firstChild.style.display="none"
+                    }catch(e){
+                        
+                    }
+
+                    e.target.parentNode.parentNode.parentNode.children[1].readOnly=false;
+                    e.target.parentNode.parentNode.parentNode.children[1].focus();
+                    this.setState({expanded:true});
+
+                }
+
         }
+
+        deletequestion=(e)=>{
+
+            e.target.parentNode.parentNode.parentNode.parentNode.remove()
+
+
+        }
+        
   addOption=async (e)=>{
 
         e.persist()
        let newoptions = this.state.options;
-        newoptions.push('Option')
+        newoptions.push('')
         await this.setState({options: newoptions})
-        console.log(this.state)
-        console.log(e.target)
-        console.log( e.target.parentNode.parentNode.parentNode.children)
-        console.log( e.target.parentNode.parentNode.parentNode.children[4])
+       
+       
         await this.setState({optionsnum: e.target.parentNode.parentNode.parentNode.children[4].children[0].children.length})
+        const newinput = e.target.parentNode.parentNode.parentNode.children[4].children[0].children;
+        console.log(newinput[newinput.length - 1])
+        newinput[newinput.length-1].children[0].focus();
+
+   }
+
+   deleteoption=(e)=>{
+       e.target.parentNode.remove();
 
    }
 
@@ -49,10 +82,10 @@ class question extends React.Component{
             <div className="questioncontent-container">
 
                 <div className="question-titles-container">
-                    {this.state.optionsnum} options
+                    {this.state.optionsnum} option(s)
                 </div>
 
-                <textarea readOnly onClick={this.clickopener}   maxLength="160" cols="25" rows="3" className="question-title" type="text" defaultValue="balnsdlnadadnajksdnajsndasdaldmalmdkamlsdmalkmsdmasdmalmdlmalkdsmkam</textarea>" />
+                <textarea readOnly  maxLength="120" cols="25" rows="3" className="question-title" type="text" placeholder={'New Question'} defaultValue={this.state.title} />
             
                 <h5 className="questions-title" >Options</h5>
 
@@ -63,9 +96,19 @@ class question extends React.Component{
                     <div className="options-wrapper">
                             {
                                 this.state.options.map((op,c)=>{
-                                    return (<input key={`${this.props.subkey}${c}`} className="option-span" defaultValue={op} />)
+                                    return (
+                                        <div className="option-span" key={`${this.props.subkey}${c}`} >
+                                                <input className="option-span-input" placeholder={"New Option"} defaultValue={op}/>
+                                                <img onClick={this.deleteoption} className="basurapngop" src={basurapng} alt="a"/>
+                                
+                                        </div>
+                                    )
+
                                 })
                             }
+                           
+
+
                     </div>
 
                 </div>
@@ -79,6 +122,9 @@ class question extends React.Component{
                         </div>
 
                         <div className="right-bottom-container">
+                            {this.state.expanded ? <h6 onClick={this.clickopener} className="right-bottom-text">Less</h6> : <h6 onClick={this.clickopener}  className="right-bottom-text">More</h6>}
+                            <img onClick={this.deletequestion} className="basurapng" src={basurapng} alt="a"/>
+
 
 
 
