@@ -6,9 +6,11 @@ const survey = new Schema ({
 
     name:{ type : String , required: true },
     usermail:{ type : String , required: true },
-    questions: {type: Array},
+    questions: {type: Array, required: true},
     results: {type: Array},
-    live:{type: Boolean}
+    live:{type: Boolean, default:false},
+    livenumber:{type: String},
+    customize:{type:Object}
 })
 
 module.exports = mongoose.model('survey', survey);

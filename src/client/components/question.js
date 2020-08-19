@@ -12,7 +12,7 @@ class question extends React.Component{
       this.state={
         title: props.data.title,
         options :props.data.options, 
-        optionsnum:null,
+        optionsnum:props.data.options.length,
         expanded:false
 
       }
@@ -65,13 +65,15 @@ class question extends React.Component{
 
    }
 
-   deleteoption=(e)=>{
+   deleteoption= async (e)=>{
        e.target.parentNode.remove();
+       await this.setState({optionsnum: e.target.parentNode.parentNode.children.length})
+
 
    }
 
    componentDidMount(){
-       this.setState({optionsnum: document.querySelector('.options-wrapper').children.length})
+       this.setState({optionsnum: this.state.options.length})
    }
 
 
@@ -85,7 +87,7 @@ class question extends React.Component{
                     {this.state.optionsnum} option(s)
                 </div>
 
-                <textarea readOnly  maxLength="120" cols="25" rows="3" className="question-title" type="text" placeholder={'New Question'} defaultValue={this.state.title} />
+                <textarea readOnly  maxLength="120" cols="35" rows="3" className="question-title" type="text" placeholder={'New Question'} defaultValue={this.state.title} />
             
                 <h5 className="questions-title" >Options</h5>
 

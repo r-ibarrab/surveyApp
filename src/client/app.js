@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import Home from './pages/home'
 import ProtectedRoute from './components/protectedRoute';
 import Surveypage from './pages/surveypage';
-
+import Surveymenu from './pages/SurveyMenu'
 
 class app extends Component {
 
@@ -18,10 +18,17 @@ class app extends Component {
 
 
     }
+    logout = async ()=>{
+        await this.setState({islogged:false})
+        console.log(this.state)
+
+    }
 
   
 
     login = async (mail)=>{
+        localStorage.setItem('islogged',true)
+        localStorage.setItem('email',mail)
    
         await this.setState({islogged:true,email:mail});
        
@@ -36,9 +43,12 @@ class app extends Component {
     
                <BrowserRouter>
                <Switch>
-                   <Route exact path ="/app" render={()=>{return <ProtectedRoute appstate={this.state} /> }}/>
-                   <Route exact path ="/" render={()=>{return <Home log={(mail)=>{this.login(mail)}} />}}/>
-                   <Route exact path ="/survey/:id" render={(props)=>{return <Surveypage appstate={this.state}/> }}/>
+                  
+
+                   <ProtectedRoute exact path="/app" appstate={this.state} logout={this.logout} component={<Surveymenu/>}/>
+                   <ProtectedRoute exact path="/survey/:id" appstate={this.state} component={<Surveypage />}/>
+                   <Route exact path ="/" render={()=>{return <Home log={(mail)=>{this.login(mail)}} appstate={this.state}/>}}/>
+                   
                    <Route path="*" render={()=> {return <Redirect to="/"/>}}/>
                </Switch>
                

@@ -1,12 +1,78 @@
-import React from 'react';
+import React ,{useState,useEffect} from 'react';
 import SurveyItem from '../components/survey';
 import './styles/surveymenu.scss';
+import Maspng from '../resources/mas.png'
 
  const surveymenu = (props)=>{
+         
+   
+    const [list,setlist] = useState([])
 
-    console.log(props)
-     const surveys = props.list;
-     console.log(surveys)
+
+    const fetchData= async ()=>{
+           
+        const email = localStorage.getItem('email')
+
+        const surveys = await fetch(`http://localhost:3000/api/user/surveys/${email}`)
+        const newsurv =await surveys.json()
+       
+        console.log(newsurv)
+        await setlist([...newsurv])
+
+
+    }
+    
+    useEffect( ()=>{
+       
+
+        fetchData();
+
+
+
+    
+
+    },[])
+
+   
+
+    const logout = ()=>{
+        localStorage.removeItem('islogged')
+        localStorage.removeItem('email')
+        
+        console.log(props)
+
+        window.location.reload()
+    }
+
+    const handleClick= async (e)=>{
+
+        const newSurvey = {
+            name:'newSurvey',
+            usermail: localStorage.getItem('email'),
+            questions: [],
+            results: [],
+            live:false,
+            livenumber:'',
+            customize:[]
+        }
+        console.log(newSurvey)
+        
+        const er = await fetch(`http://localhost:3000/api/survey`,{
+            method:'POST',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(newSurvey)
+        })
+        if(er.message === 'ok'){
+            console.log(er)
+        }
+
+        fetchData()
+
+    }
+     
 
     return(
         <div className="surveymenu-list">
@@ -15,12 +81,25 @@ import './styles/surveymenu.scss';
            
 
         {
-            surveys.map((data)=>{
-                return (<SurveyItem key={data.id} title={data.title} id={data.id} />)
+            list.map((data,c)=>{
+                
+
+                return (<SurveyItem key={c} title={data.name} id={data._id} />)
 
 
             })
         }
+
+        <div onClick={handleClick} className="createsurvey">
+
+        <img src={Maspng} alt=""/>
+        <h4 >Create survey</h4>
+
+        </div>
+
+        <div onClick={logout} className="logout-button">
+            <h5>Log out</h5>
+        </div>
 
 
         </div>

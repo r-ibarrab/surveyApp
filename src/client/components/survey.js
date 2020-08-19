@@ -3,9 +3,9 @@ import './styles/survey.scss'
 import { Link } from 'react-router-dom';
 
 const survey=(props)=> {
+
+        console.log('props: '+props)
     
-
-
         return (
            
                 <Link to={`/survey/${props.id}`} className="survey-link">

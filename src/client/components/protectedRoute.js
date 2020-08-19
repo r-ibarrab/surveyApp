@@ -1,33 +1,35 @@
 import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
+import Surveypage from '../pages/surveypage'
 import SurveyMenu from '../pages/SurveyMenu'
+
 
 const protectedRoute = (props)=>{
 
+            const logged = localStorage.getItem('islogged')
+            const email = localStorage.getItem('email')
+         
+            
 
-            const surveylist = [
-                {
-                    title:'myfirst',
-                    id:1
-                },
-                {
-                    title:'mysecond',
-                    id:2
-                }
-            ]
-            console.log(surveylist)
 
-  
+
    
             return(
             <Route render={()=>{
 
         
-        if(props.appstate.islogged){
-                return(
-                    <SurveyMenu list={surveylist}/>
-                    
-                    )
+        if(props.appstate.islogged || (logged && email)){
+               
+                    switch(props.computedMatch.path){
+
+                        case '/survey/:id':
+                            return (<Surveypage props={props}/>)
+
+                        break;
+                        case '/app':
+                            return <SurveyMenu />
+
+                    }
 
                 }else{
                     return(<Redirect to="/"/>)

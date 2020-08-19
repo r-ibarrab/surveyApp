@@ -7,10 +7,32 @@ class rightnav extends React.Component{
 
     constructor(props){
         super(props)
-        this.state={
-            ret: props.questions || []
+        console.log('props rightnav:',props)
+        let title;
+
+        if(props.survey.name === 'newSurvey'){
+            title = ''
+        }else{
+            title=props.survey.name
         }
+
+        this.state={
+            ret: props.survey.questions || [],
+            surveytitle:title
+        }
+       
     }
+
+    componentWillReceiveProps(nextProps) {
+
+        // let title
+        // if(nextProps.survey.name === "newSurvey"){
+        //     title = ''
+        // }else{
+        //     title=nextProps.survey.name
+        // }
+        this.setState({ ret: nextProps.survey.questions,surveytitle:nextProps.survey.name});  
+      }
 
     addquestion=()=>{
         let questions = this.state.ret;
@@ -19,18 +41,70 @@ class rightnav extends React.Component{
         this.setState({ret:questions})
     }
 
-    saveeverything=()=>{
-        const hijos = document.querySelector('.questions-wrapper-container').children
-        console.log(hijos)
+    handleQuestionsChange=(e)=>{
+
+        let questionsarray = this.state.ret;
+
+        
+
+        const questions =[]
+
+        this.props.changeQue(questions)
+
 
     }
+
+    saveeverything=()=>{
+        const hijos = document.querySelector('.questions-wrapper-container').childNodes
+        let data = [];
+       
+       
+
+        hijos.forEach(i=>{
+           
+            let content = i.children[0]
+            let stitle = content.children[1].value;
+            let inputopt = content.children[4].children[0].children
+            let opts=[]
+            for(let con=0;con<inputopt.length;con++){
+               opts.push(inputopt[con].children[0].value)
+            }
+
+            data.push({title: stitle, options: opts})
+            
+        })
+        
+        const survtitle = document.querySelector('.survey-title').value
+        const usermail = localStorage.getItem('email')
+        const idsurvey = this.props.surveyid;
+        
+
+        const fdata = {
+            name:survtitle,
+            usermail:usermail,
+            questions:data,
+            id:idsurvey
+        }  
+
+        console.log(fdata)
+        this.props.send(fdata)
+    
+    }
+
+    componentDidMount(){
+
+        console.log(this.state.surveytitle)
+        console.log(this.props)
+
+    }
+
 
     render(){
         return(
             <div className="rightnav-container">
     
                 <div className="title-input">
-                    <input type="text" defaultValue="Survey Title"/>
+                    <input className ="survey-title" type="text" placeholder="Survey Title" defaultValue={this.state.surveytitle}/>
                 </div>
     
                 <div className="lineseparator">
@@ -45,6 +119,7 @@ class rightnav extends React.Component{
                             this.state.ret.map((e,c)=>{
                                 return <Question key={c} subkey={c} data={e} />
                             })
+
                         }
                        
                     </div>
